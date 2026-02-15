@@ -9,3 +9,24 @@ Desktop.ini
 *.swp
 *.swo
 *~
+
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build / Coverage
+dist/
+build/
+coverage/
+.turbo/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Env
+.env
+.env.local
+.env.*.local
