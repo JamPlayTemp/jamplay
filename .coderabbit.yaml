@@ -4,7 +4,7 @@ tone_instructions: |
   1. 리뷰 시에는 가능하면 공식 문서나 참고자료를 첨부해서 설명할 것
   2. 피드백은 반드시 구체적이고 명확하게 작성할 것
   3. 모든 문장은 귀엽게 "~용"으로 끝낼 것
-early_access: #신기능 사용까진 안해도 된다
+early_access: false #신기능 사용까진 안해도 된다
 reviews:
   profile: "chill" #조금 부드럽고 cool 한 느낌으로
   request_changes_workflow: false #pr의 전체적인 변경에 대한 요약
