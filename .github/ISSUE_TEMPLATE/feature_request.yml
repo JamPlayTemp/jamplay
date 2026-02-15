@@ -1,0 +1,23 @@
+name: "✨ 작업 요청"
+description: "이슈를 추가할 때 템플릿을 사용하여 작성해주세요"
+title: "Feature Request"
+labels: []
+
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: "📝 어떤 작업인가요?"
+      description: "추가/개선하려는 기능이나 수정하려는 버그에 대해 간결하게 설명해주세요."
+      placeholder: "예: '로그인 페이지에 '비밀번호 찾기' 버튼 추가"
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation
+    attributes:
+      label: "💡 구현 방안 혹은 참고 자료"
+      description: "이 작업을 어떻게 구현할 수 있을지에 대한 아이디어가 있다면 간단히 설명해주세요."
+      placeholder: "예: '1. /find-password 라우트 생성. 2. SendGrid API를 이용해 이메일 전송...'"
+    validations:
+      required: false

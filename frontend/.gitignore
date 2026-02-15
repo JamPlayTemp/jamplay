@@ -1,0 +1,60 @@
+# ==============================
+# OS / File Explorer Artifacts
+# ==============================
+.DS_Store
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ==============================
+# Editor / IDE
+# ==============================
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# ==============================
+# Logs
+# ==============================
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# ==============================
+# Environment Files
+# ==============================
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+
+# ==============================
+# Dependencies (pnpm workspace package)
+# ==============================
+node_modules/
+
+# ==============================
+# Build Output (React + Vite)
+# ==============================
+dist/
+.vite/
+*.tsbuildinfo
+
+# ==============================
+# Test Outputs (Vitest / Playwright)
+# ==============================
+coverage/
+.vitest/
+playwright-report/
+test-results/
+blob-report/
+
+# ==============================
+# Vercel
+# ==============================
+.vercel/
+
