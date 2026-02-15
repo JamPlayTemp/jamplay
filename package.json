@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "packageManager": "pnpm@10.15.0",
   "engines": {
-    "node": "20.x"
+    "node": "24.13.1"
   },
   "scripts": {
     "lint": "pnpm -r --if-present lint",
