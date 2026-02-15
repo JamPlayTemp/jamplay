@@ -1,0 +1,23 @@
+{
+  "name": "jamplay",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "commit": "cz"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-customizable"
+    }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.28.1",
+  "devDependencies": {
+    "commitizen": "^4.3.1",
+    "cz-customizable": "^7.5.1"
+  }
+}
