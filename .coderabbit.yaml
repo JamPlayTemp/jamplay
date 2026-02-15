@@ -11,7 +11,7 @@ reviews:
   high_level_summary: true #변경된 각 파일에 대한 요약
   poem: false #시는 안써도 된다...
   review_status: true # 이 pr의 상태에 대해서 평가 -> 한 줄요약 느낌
-  collapse_walkthrough:
+  collapse_walkthrough: false
   changed_files_summary: true # 코드 변경 사항을 다이어그램으로 보면 보기 편합니다.
   auto_review:
     enabled: true #이미 pr이 생성된 후 부분 commit에 대한 추가 리뷰 허용
