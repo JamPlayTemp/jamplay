@@ -58,3 +58,13 @@ blob-report/
 # ==============================
 .vercel/
 
+# Playwright
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
+
+
+# AI Skills
+/.agents
+/.agent
