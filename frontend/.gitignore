@@ -22,8 +22,8 @@ blob-report/
 # ==============================
 # Playwright Runtime
 # ==============================
-/playwright/.cache/
-/playwright/.auth/
+playwright/.cache/
+playwright/.auth/
 
 # ==============================
 # Environment Files
