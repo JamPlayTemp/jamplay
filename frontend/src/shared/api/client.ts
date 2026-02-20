@@ -1,0 +1,143 @@
+import axios, {
+  type AxiosError,
+  type AxiosRequestConfig,
+  type InternalAxiosRequestConfig,
+} from "axios";
+
+import { API_BASE_URL, API_TIMEOUT, REFRESH_ENDPOINT } from "./config";
+import { type ApiResponse, type TokenResponse } from "./types";
+import {
+  getAccessToken,
+  getRefreshToken,
+  setTokens,
+  clearTokens,
+} from "../lib/auth-storage";
+
+export const apiClient = axios.create({
+  baseURL: API_BASE_URL,
+  timeout: API_TIMEOUT,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+// 인터셉터 사용으로 매 요청마다 자동으로 액세스 토큰 주입
+apiClient.interceptors.request.use(
+  (config: InternalAxiosRequestConfig) => {
+    const token = getAccessToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error: AxiosError) => Promise.reject(error),
+);
+
+let isRefreshing = false;
+
+// 토큰 갱신 대기 중인 요청 큐 (갱신 중 동시 요청들을 모아뒀다가 한번에 재시도)
+let failedQueue: Array<{
+  resolve: (token: string) => void;
+  reject: (error: unknown) => void;
+}> = [];
+
+function processQueue(error: unknown, token: string | null = null): void {
+  failedQueue.forEach(({ resolve, reject }) => {
+    if (error) {
+      reject(error);
+    } else if (token) {
+      resolve(token);
+    }
+  });
+  failedQueue = [];
+}
+
+apiClient.interceptors.response.use(
+  (response) => response,
+  async (error: AxiosError) => {
+    const originalRequest = error.config;
+
+    // 401이 아니거나 config가 없으면 그대로 에러 반환
+    if (!originalRequest || error.response?.status !== 401) {
+      return Promise.reject(error);
+    }
+
+    // refresh 요청에서 401이 오면 리프레시 토큰 만료 => 로그아웃 (관련 상태 다 날리는게 좋을 것 같아서 window.location.href 사용)
+    if (originalRequest.url?.includes(REFRESH_ENDPOINT)) {
+      clearTokens();
+      window.location.href = "/login";
+      return Promise.reject(error);
+    }
+
+    // 이미 토큰 갱신 중이면 큐에 넣고 대기
+    if (isRefreshing) {
+      return new Promise<string>((resolve, reject) => {
+        failedQueue.push({ resolve, reject });
+      }).then((token) => {
+        originalRequest.headers.Authorization = `Bearer ${token}`;
+        return apiClient(originalRequest);
+      });
+    }
+
+    isRefreshing = true;
+
+    try {
+      const refreshToken = getRefreshToken();
+
+      if (!refreshToken) {
+        clearTokens();
+        window.location.href = "/login";
+        return Promise.reject(error);
+      }
+
+      // 토큰 갱신 요청
+      const data = await apiPost<TokenResponse>(REFRESH_ENDPOINT, {
+        refreshToken,
+      });
+
+      const newAccessToken = data.accessToken;
+      const newRefreshToken = data.refreshToken;
+
+      setTokens(newAccessToken, newRefreshToken);
+      processQueue(null, newAccessToken);
+
+      // 원래 요청 재시도
+      originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+      return apiClient(originalRequest);
+    } catch (refreshError) {
+      processQueue(refreshError, null);
+      return Promise.reject(refreshError);
+    } finally {
+      isRefreshing = false;
+    }
+  },
+);
+
+async function api<T>(config: AxiosRequestConfig): Promise<T> {
+  const { data } = await apiClient<ApiResponse<T>>(config);
+  return data.data;
+}
+
+export const apiGet = <T>(url: string, config?: AxiosRequestConfig) =>
+  api<T>({ ...config, method: "GET", url });
+
+export const apiPost = <T>(
+  url: string,
+  body?: unknown,
+  config?: AxiosRequestConfig,
+) => api<T>({ ...config, method: "POST", url, data: body });
+
+export const apiPut = <T>(
+  url: string,
+  body?: unknown,
+  config?: AxiosRequestConfig,
+) => api<T>({ ...config, method: "PUT", url, data: body });
+
+export const apiPatch = <T>(
+  url: string,
+  body?: unknown,
+  config?: AxiosRequestConfig,
+) => api<T>({ ...config, method: "PATCH", url, data: body });
+
+export const apiDelete = <T>(url: string, config?: AxiosRequestConfig) =>
+  api<T>({ ...config, method: "DELETE", url });
