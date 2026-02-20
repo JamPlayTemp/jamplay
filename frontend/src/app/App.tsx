@@ -1,18 +1,29 @@
 import { RouterProvider } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
-import { Providers } from './providers';
-import { createAppRouter } from './router';
+import { useAuth } from '@/app/providers/auth-context';
+import { Providers } from '@/app/providers';
+import { createAppRouter } from '@/app/router';
 
 const router = createAppRouter();
 const shouldShowRouterDevtools = import.meta.env.MODE === 'development';
 
-function App() {
+function AppContent() {
+  const user = useAuth();
+
   return (
-    <Providers>
-      <RouterProvider router={router} />
+    <>
+      <RouterProvider router={router} context={{ user }} />
       {shouldShowRouterDevtools ? (
         <TanStackRouterDevtools router={router} />
       ) : null}
+    </>
+  );
+}
+
+function App() {
+  return (
+    <Providers>
+      <AppContent />
     </Providers>
   );
 }
