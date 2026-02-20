@@ -4,6 +4,7 @@ export const buttonVariants = cva("", {
   variants: {
     variant: {
       default: "",
+      outline: "",
     },
     size: {
       default: "",
