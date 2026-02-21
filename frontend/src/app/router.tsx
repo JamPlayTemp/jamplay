@@ -9,6 +9,7 @@ import type { UserAccess } from '@/app/providers/auth-context';
 import { RootError } from '@/app/error/RootError';
 import { RootLayout } from '@/app/layouts/RootLayout';
 import { RootLoading } from '@/app/loading/RootLoading';
+import { HEADER_CONFIG, withHeader } from '@/widgets/page-header';
 import { AdminPage } from '@/pages/admin/AdminPage';
 import { BandCreatePage } from '@/pages/band/BandCreatePage';
 import { BandDetailPage } from '@/pages/band/BandDetailPage';
@@ -64,34 +65,48 @@ const rootRoute = createRootRouteWithContext<RouterContext>()({
 /* ------------------------------------------------------------------ */
 
 const myBandsRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/',
-  component: MyBandsPage,
+  ...withHeader(
+    {
+      getParentRoute: () => rootRoute,
+      path: '/',
+      component: MyBandsPage,
+    },
+    HEADER_CONFIG.home,
+  ),
 });
 
 const profileRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/profile',
-  beforeLoad: requireLogin,
-  component: ProfilePage,
-});
-
-const songsRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/songs',
-  component: SongsPage,
+  ...withHeader(
+    {
+      getParentRoute: () => rootRoute,
+      path: '/profile',
+      beforeLoad: requireLogin,
+      component: ProfilePage,
+    },
+    HEADER_CONFIG.profile,
+  ),
 });
 
 const songTeamsRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/song/$songId/teams',
-  component: SongTeamsPage,
+  ...withHeader(
+    {
+      getParentRoute: () => rootRoute,
+      path: '/song/$songId/teams',
+      component: SongTeamsPage,
+    },
+    HEADER_CONFIG.songTeams,
+  ),
 });
 
 const teamDetailRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/team/$teamId',
-  component: TeamDetailPage,
+  ...withHeader(
+    {
+      getParentRoute: () => rootRoute,
+      path: '/song/$songId/team/$teamId',
+      component: TeamDetailPage,
+    },
+    HEADER_CONFIG.teamDetail,
+  ),
 });
 
 /* ------------------------------------------------------------------ */
@@ -105,33 +120,69 @@ const bandRoute = createRoute({
 });
 
 const bandDetailRoute = createRoute({
-  getParentRoute: () => bandRoute,
-  path: '/',
-  component: BandDetailPage,
+  ...withHeader(
+    {
+      getParentRoute: () => bandRoute,
+      path: '/',
+      component: BandDetailPage,
+    },
+    HEADER_CONFIG.bandDetail,
+  ),
 });
 
 const bandSettingsRoute = createRoute({
-  getParentRoute: () => bandRoute,
-  path: 'settings',
-  component: BandSettingsPage,
+  ...withHeader(
+    {
+      getParentRoute: () => bandRoute,
+      path: 'settings',
+      component: BandSettingsPage,
+    },
+    HEADER_CONFIG.bandSettings,
+  ),
 });
 
 const bandInviteRoute = createRoute({
-  getParentRoute: () => bandRoute,
-  path: 'invite',
-  component: BandInvitePage,
+  ...withHeader(
+    {
+      getParentRoute: () => bandRoute,
+      path: 'invite',
+      component: BandInvitePage,
+    },
+    HEADER_CONFIG.bandInvite,
+  ),
 });
 
 const bandPerformanceRoute = createRoute({
-  getParentRoute: () => bandRoute,
-  path: 'performance/$performanceId',
-  component: BandPerformancePage,
+  ...withHeader(
+    {
+      getParentRoute: () => bandRoute,
+      path: 'performance/$performanceId',
+      component: BandPerformancePage,
+    },
+    HEADER_CONFIG.bandPerformance,
+  ),
+});
+
+const bandPerformanceSongsRoute = createRoute({
+  ...withHeader(
+    {
+      getParentRoute: () => bandRoute,
+      path: 'performance/$performanceId/songs',
+      component: SongsPage,
+    },
+    HEADER_CONFIG.songs,
+  ),
 });
 
 const bandCreateRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/band/create',
-  component: BandCreatePage,
+  ...withHeader(
+    {
+      getParentRoute: () => rootRoute,
+      path: '/band/create',
+      component: BandCreatePage,
+    },
+    HEADER_CONFIG.bandCreate,
+  ),
 });
 
 /* ------------------------------------------------------------------ */
@@ -139,21 +190,36 @@ const bandCreateRoute = createRoute({
 /* ------------------------------------------------------------------ */
 
 const performanceCreateRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/performance/create',
-  component: PerformanceCreatePage,
+  ...withHeader(
+    {
+      getParentRoute: () => rootRoute,
+      path: '/performance/create',
+      component: PerformanceCreatePage,
+    },
+    HEADER_CONFIG.performanceCreate,
+  ),
 });
 
 const inviteAcceptRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/invite/accept',
-  component: InviteAcceptPage,
+  ...withHeader(
+    {
+      getParentRoute: () => rootRoute,
+      path: '/invite/accept',
+      component: InviteAcceptPage,
+    },
+    HEADER_CONFIG.inviteAccept,
+  ),
 });
 
 const inviteRequestRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/invite/request',
-  component: InviteRequestPage,
+  ...withHeader(
+    {
+      getParentRoute: () => rootRoute,
+      path: '/invite/request',
+      component: InviteRequestPage,
+    },
+    HEADER_CONFIG.inviteRequest,
+  ),
 });
 
 /* ------------------------------------------------------------------ */
@@ -161,10 +227,15 @@ const inviteRequestRoute = createRoute({
 /* ------------------------------------------------------------------ */
 
 const adminRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/admin',
-  beforeLoad: requireAdmin,
-  component: AdminPage,
+  ...withHeader(
+    {
+      getParentRoute: () => rootRoute,
+      path: '/admin',
+      beforeLoad: requireAdmin,
+      component: AdminPage,
+    },
+    HEADER_CONFIG.admin,
+  ),
 });
 
 /* ------------------------------------------------------------------ */
@@ -174,7 +245,6 @@ const adminRoute = createRoute({
 export const routeTree = rootRoute.addChildren([
   myBandsRoute,
   profileRoute,
-  songsRoute,
   songTeamsRoute,
   teamDetailRoute,
 
@@ -183,6 +253,7 @@ export const routeTree = rootRoute.addChildren([
     bandSettingsRoute,
     bandInviteRoute,
     bandPerformanceRoute,
+    bandPerformanceSongsRoute,
   ]),
 
   bandCreateRoute,
