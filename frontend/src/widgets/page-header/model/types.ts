@@ -37,6 +37,9 @@ export type HeaderStaticConfig = {
   subtitle?: string;
   brandLabel?: string;
   showBack?: boolean;
+  backBehavior?: 'route' | 'browser';
+  backTo?: string;
+  getBackParams?: (params: Record<string, string>) => Record<string, string>;
   showUtilities?: boolean;
   showSearchBar?: boolean;
   showProfileAvatar?: boolean;

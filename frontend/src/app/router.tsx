@@ -102,7 +102,7 @@ const teamDetailRoute = createRoute({
   ...withHeader(
     {
       getParentRoute: () => rootRoute,
-      path: '/team/$teamId',
+      path: '/song/$songId/team/$teamId',
       component: TeamDetailPage,
     },
     HEADER_CONFIG.teamDetail,

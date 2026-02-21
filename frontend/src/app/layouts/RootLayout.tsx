@@ -58,7 +58,25 @@ export const RootLayout = () => {
     };
   });
 
-  const onBack = header?.showBack ? () => router.history.back() : undefined;
+  const onBack = header?.showBack
+    ? () => {
+        if (header.backBehavior === 'browser') {
+          router.history.back();
+          return;
+        }
+
+        if (header.backTo) {
+          const backParams = header.getBackParams?.(currentParams);
+          router.navigate({
+            to: header.backTo as never,
+            ...(backParams ? { params: backParams as never } : {}),
+          });
+          return;
+        }
+
+        router.history.back();
+      }
+    : undefined;
 
   const pageHeaderProps = header
     ? {

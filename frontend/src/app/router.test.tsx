@@ -1,5 +1,5 @@
 import { RouterProvider, createMemoryHistory } from '@tanstack/react-router';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import type { UserAccess } from '@/app/providers/auth-context';
 import { createAppRouter } from '@/app/router';
@@ -9,6 +9,19 @@ const createRouterForTest = (initialPath: string, user: UserAccess) => {
   router.update({
     history: createMemoryHistory({
       initialEntries: [initialPath],
+    }),
+    context: { user },
+  });
+
+  return router;
+};
+
+const createRouterForHistoryTest = (entries: string[], user: UserAccess) => {
+  const router = createAppRouter();
+  router.update({
+    history: createMemoryHistory({
+      initialEntries: entries,
+      initialIndex: entries.length - 1,
     }),
     context: { user },
   });
@@ -152,5 +165,61 @@ describe('앱 라우터', () => {
 
     expect(await screen.findByText('InviteAcceptPage')).toBeInTheDocument();
     expect(screen.queryByLabelText('프로필 열기')).not.toBeInTheDocument();
+  });
+
+  it('밴드 상세의 뒤로가기는 루트(MyBands)로 이동한다', async () => {
+    const router = createRouterForTest('/band/1', {
+      isLoggedIn: true,
+      isAdmin: false,
+    });
+
+    render(<RouterProvider router={router} />);
+
+    await screen.findByText('BandDetailPage');
+    fireEvent.click(screen.getByRole('button', { name: '뒤로' }));
+
+    expect(await screen.findByText('MyBandsPage')).toBeInTheDocument();
+  });
+
+  it('프로필의 뒤로가기는 브라우저 history back 동작을 사용한다', async () => {
+    const router = createRouterForHistoryTest(['/', '/profile'], {
+      isLoggedIn: true,
+      isAdmin: false,
+    });
+
+    render(<RouterProvider router={router} />);
+
+    await screen.findByText('ProfilePage');
+    fireEvent.click(screen.getByRole('button', { name: '뒤로' }));
+
+    expect(await screen.findByText('MyBandsPage')).toBeInTheDocument();
+  });
+
+  it('팀 상세의 뒤로가기는 해당 곡의 팀 목록으로 이동한다', async () => {
+    const router = createRouterForTest('/song/1/team/1', {
+      isLoggedIn: true,
+      isAdmin: false,
+    });
+
+    render(<RouterProvider router={router} />);
+
+    await screen.findByText('TeamDetailPage');
+    fireEvent.click(screen.getByRole('button', { name: '뒤로' }));
+
+    expect(await screen.findByText('SongTeamsPage')).toBeInTheDocument();
+  });
+
+  it('공연 상세(캘린더)의 뒤로가기는 밴드 상세로 이동한다', async () => {
+    const router = createRouterForTest('/band/1/performance/1', {
+      isLoggedIn: true,
+      isAdmin: false,
+    });
+
+    render(<RouterProvider router={router} />);
+
+    await screen.findByText('BandPerformancePage');
+    fireEvent.click(screen.getByRole('button', { name: '뒤로' }));
+
+    expect(await screen.findByText('BandDetailPage')).toBeInTheDocument();
   });
 });

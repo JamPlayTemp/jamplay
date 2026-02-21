@@ -46,9 +46,10 @@ const performanceTabs: HeaderTab[] = [
 
 const HEADER_DEFAULTS: Pick<
   HeaderStaticConfig,
-  'showBack' | 'showUtilities' | 'showSearchBar' | 'showProfileAvatar'
+  'showBack' | 'backBehavior' | 'showUtilities' | 'showSearchBar' | 'showProfileAvatar'
 > = {
   showBack: true,
+  backBehavior: 'route',
   showUtilities: true,
   showSearchBar: false,
   showProfileAvatar: true,
@@ -74,10 +75,15 @@ export const HEADER_CONFIG = {
     title: '마이페이지',
     subtitle: '내 프로필 정보를 관리하세요',
     rightActionLabel: '수정',
+    backBehavior: 'browser',
     showProfileAvatar: false,
   }),
   songs: createHeaderConfig({
     title: '공연 상세',
+    backTo: '/band/$bandId',
+    getBackParams: (params: Record<string, string>) => ({
+      bandId: params.bandId,
+    }),
     tabs: performanceTabs,
     rightActionLabel: '설정',
     rightActionTo: '/band/$bandId/settings',
@@ -103,6 +109,10 @@ export const HEADER_CONFIG = {
   }),
   teamDetail: createHeaderConfig({
     title: '팀 상세',
+    backTo: '/song/$songId/teams',
+    getBackParams: (params: Record<string, string>) => ({
+      songId: params.songId,
+    }),
   }),
   bandCreate: createHeaderConfig({
     title: '밴드 생성',
@@ -110,6 +120,7 @@ export const HEADER_CONFIG = {
   bandDetail: createHeaderConfig({
     title: '밴드',
     brandLabel: '밴드',
+    backTo: '/',
     rightActionLabel: '밴드 설정',
     rightActionTo: '/band/$bandId/settings',
     getRightActionParams: (params: Record<string, string>) => ({
@@ -136,12 +147,18 @@ export const HEADER_CONFIG = {
   }),
   bandSettings: createHeaderConfig({
     title: '밴드 설정',
+    backTo: '/',
   }),
   bandInvite: createHeaderConfig({
     title: '밴드 초대',
+    backTo: '/',
   }),
   bandPerformance: createHeaderConfig({
     title: '공연 상세',
+    backTo: '/band/$bandId',
+    getBackParams: (params: Record<string, string>) => ({
+      bandId: params.bandId,
+    }),
     tabs: performanceTabs,
     rightActionLabel: '설정',
     rightActionTo: '/band/$bandId/settings',
