@@ -1,8 +1,8 @@
 import { RouterProvider, createMemoryHistory } from '@tanstack/react-router';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import type { UserAccess } from './providers/auth-context';
-import { createAppRouter } from './router';
+import type { UserAccess } from '@/app/providers/auth-context';
+import { createAppRouter } from '@/app/router';
 
 const createRouterForTest = (initialPath: string, user: UserAccess) => {
   const router = createAppRouter();
