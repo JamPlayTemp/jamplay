@@ -15,6 +15,14 @@ type InputProps = React.ComponentProps<'input'> & {
  * Base input component with optional search-bar mode.
  */
 function Input({ className, type, isSearchBar = false, ...props }: InputProps) {
+  const hasAccessibleName = Boolean(props['aria-label'] || props['aria-labelledby']);
+  const defaultSearchAriaLabel =
+    typeof props.placeholder === 'string' && props.placeholder.trim().length > 0
+      ? props.placeholder
+      : 'Search';
+  const inputProps =
+    isSearchBar && !hasAccessibleName ? { ...props, 'aria-label': defaultSearchAriaLabel } : props;
+
   const inputElement = (
     <input
       type={type}
@@ -26,7 +34,7 @@ function Input({ className, type, isSearchBar = false, ...props }: InputProps) {
         isSearchBar && 'pl-9',
         className,
       )}
-      {...props}
+      {...inputProps}
     />
   );
 
